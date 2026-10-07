@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>GitHub Admin</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.css"
+    >
+</head>
+
+<body>
+
+<div id="app">
+
+    <aside id="sidebar">
+
+        <h1>GitHub Admin</h1>
+
+        <section id="connection">
+
+            <input
+                id="token"
+                type="password"
+                placeholder="GitHub token"
+                autocomplete="off"
+            >
+
+            <input
+                id="repo"
+                type="text"
+                placeholder="owner/repository"
+            >
+
+            <input
+                id="branch"
+                type="text"
+                placeholder="Branch"
+                value="main"
+            >
+
+            <div class="button-row">
+                <button onclick="connect()">Connect</button>
+                <button class="secondary" onclick="clearToken()">
+                    Forget token
+                </button>
+            </div>
+
+            <div id="status"></div>
+
+        </section>
+
+        <section id="post-info">
+
+            <strong>New Post</strong>
+
+            <label for="post-name">Post name</label>
+
+            <input
+                id="post-name"
+                type="text"
+                placeholder="My First Post"
+                oninput="updateFilePath()"
+            >
+
+            <div id="file-path">
+                blog/YYYY-MM-DD-post-name.md
+            </div>
+
+        </section>
+
+    </aside>
+
+
+    <main id="main">
+
+        <div id="toolbar">
+
+            <span id="current-file">
+                New post
+            </span>
+
+        </div>
+
+
+        <div id="editor-container">
+
+            <textarea id="editor"></textarea>
+
+        </div>
+
+
+        <div id="bottom-bar">
+
+            <input
+                id="commit-message"
+                type="text"
+                placeholder="Commit message"
+            >
+
+            <button onclick="saveFile()">
+                Publish
+            </button>
+
+        </div>
+
+    </main>
+
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.js"></script>
+<script src="script.js"></script>
+
+</body>
+</html>
