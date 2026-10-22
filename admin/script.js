@@ -1,80 +1,60 @@
-const POST_DIRECTORY = "blog";
+const POST_DIRECTORY = "_posts";
 
 let githubToken = null;
 
-const editor = new EasyMDE({
-    element: document.getElementById("editor"),
-
-    spellChecker: false,
-    autofocus: false,
-    status: false,
-
-    toolbar: [
-        "bold",
-        "italic",
-        "heading",
-        "|",
-        "quote",
-        "unordered-list",
-        "ordered-list",
-        "|",
-        "link",
-        "image",
-        "code",
-        "table",
-        "|",
-        "preview",
-        "side-by-side",
-        "fullscreen"
+const editor = new toastui.Editor({
+    el: document.querySelector("#editor"),
+    height: "100%",
+    initialEditType: "wysiwyg",
+    previewStyle: "vertical",
+    initialValue: "Start writing your post here...",
+    usageStatistics: false,
+    hideModeSwitch: true,
+    toolbarItems: [
+        ["heading", "bold", "italic", "strike"],
+        ["hr", "quote"],
+        ["ul", "ol", "task"],
+        ["table", "link", "image"],
+        ["code", "codeblock"]
     ]
 });
 
+// SETTINGS
+
+const DEFAULT_REPO = "37jurnalistik/37jurnalistik.github.io";
+const DEFAULT_BRANCH = "main";
 
 function loadSettings() {
     const token = localStorage.getItem("github_token");
-    const repo = localStorage.getItem("github_repo");
-    const branch = localStorage.getItem("github_branch");
 
     if (token) {
         githubToken = token;
         document.getElementById("token").value = token;
     }
-
-    if (repo) {
-        document.getElementById("repo").value = repo;
-    }
-
-    if (branch) {
-        document.getElementById("branch").value = branch;
-    }
 }
-
 
 function saveSettings() {
-    localStorage.setItem("github_token", githubToken);
+    const token = document.getElementById("token").value.trim();
+    const repo = DEFAULT_REPO;
+    const branch = DEFAULT_BRANCH;
 
-    localStorage.setItem(
-        "github_repo",
-        document.getElementById("repo").value
-    );
+    if (token) {
+        githubToken = token;
+        localStorage.setItem("github_token", token);
+    }
 
-    localStorage.setItem(
-        "github_branch",
-        document.getElementById("branch").value
-    );
+    localStorage.setItem("github_repo", repo);
+    localStorage.setItem("github_branch", branch);
 }
-
 
 function clearToken() {
     localStorage.removeItem("github_token");
-
     githubToken = null;
-
     document.getElementById("token").value = "";
-
     setStatus("Token removed.");
 }
 
+// GITHUB API
 
 async function github(path, options = {}) {
     if (!githubToken) {
@@ -83,33 +63,21 @@ async function github(path, options = {}) {
 
     return fetch(`https://api.github.com${path}`, {
         ...options,
-
         headers: {
             "Accept": "application/vnd.github+json",
             "Authorization": `Bearer ${githubToken}`,
-            "X-GitHub-Api-Version": "2026-03-10",
-
+            "X-GitHub-Api-Version": "2022-11-28",
             ...options.headers
         }
     });
 }
 
-
 function repoPath(path = "") {
-    const repo = document
-        .getElementById("repo")
-        .value
-        .trim();
-
-    return `/repos/${repo}${path}`;
+    return `/repos/${DEFAULT_REPO}${path}`;
 }
 
-
 async function connect() {
-    const token = document
-        .getElementById("token")
-        .value
-        .trim();
+    const token = document.getElementById("token").value.trim();
 
     if (!token) {
         setStatus("Enter a GitHub token.");
@@ -117,7 +85,6 @@ async function connect() {
     }
 
     githubToken = token;
-
     saveSettings();
 
     try {
@@ -126,24 +93,29 @@ async function connect() {
         const response = await github("/user");
 
         if (!response.ok) {
-            throw new Error(
-                `GitHub returned ${response.status}`
-            );
+            throw new Error(`GitHub returned ${response.status}`);
         }
 
         const user = await response.json();
 
         setStatus(`Connected as ${user.login}`);
-
     } catch (error) {
         console.error(error);
-
-        setStatus(
-            `Connection failed: ${error.message}`
-        );
+        setStatus(`Connection failed: ${error.message}`);
     }
 }
 
+// POST DETAILS
+
+function getValue(id) {
+    const element = document.getElementById(id);
+
+    if (!element) {
+        throw new Error(`Missing HTML element: #${id}`);
+    }
+
+    return element.value.trim();
+}
 
 function slugify(text) {
     return text
@@ -153,89 +125,87 @@ function slugify(text) {
         .replace(/^-+|-+$/g, "");
 }
 
-
 function getCurrentDate() {
     const now = new Date();
 
     const year = now.getFullYear();
-
-    const month = String(
-        now.getMonth() + 1
-    ).padStart(2, "0");
-
-    const day = String(
-        now.getDate()
-    ).padStart(2, "0");
+    const month = String(now.getMonth() + 1).padStart(2, "0");
+    const day = String(now.getDate()).padStart(2, "0");
 
     return `${year}-${month}-${day}`;
 }
 
-
 function getPostName() {
-    return document
-        .getElementById("post-name")
-        .value
-        .trim();
+    return getValue("post-name");
 }
-
 
 function getFilePath() {
     const name = getPostName();
-
-    if (!name) {
-        return null;
-    }
-
     const slug = slugify(name);
 
     if (!slug) {
         return null;
     }
 
-    const date = getCurrentDate();
-
-    return `${POST_DIRECTORY}/${date}-${slug}.md`;
+    return `${POST_DIRECTORY}/${getCurrentDate()}-${slug}.md`;
 }
-
 
 function updateFilePath() {
-    const name = getPostName();
-
     const filePath = getFilePath();
 
-    const pathDisplay =
-        document.getElementById("file-path");
-
-    const commitMessage =
-        document.getElementById("commit-message");
-
-    if (!name || !filePath) {
-        pathDisplay.textContent =
-            `blog/${getCurrentDate()}-post-name.md`;
-
-        commitMessage.value = "";
-
-        return;
-    }
-
-    pathDisplay.textContent = filePath;
-
-    commitMessage.value = `Add ${name}`;
+    document.getElementById("file-path").textContent =
+        filePath || `blog/${getCurrentDate()}-post-name.md`;
 }
 
+// YAML FRONT MATTER
+
+function yamlString(value) {
+    return JSON.stringify(value.trim());
+}
+
+function getList(id) {
+    return getValue(id)
+        .split(",")
+        .map(value => value.trim())
+        .filter(Boolean);
+}
+
+function getFrontMatter() {
+    const title = getPostName();
+    const author = getValue("author");
+    const description = getValue("description");
+    const categories = getList("categories");
+
+    const lines = [
+        "---",
+        `title: ${yamlString(title)}`,
+        `author: ${yamlString(author)}`,
+        `date: ${getCurrentDate()}`,
+        `description: ${yamlString(description)}`,
+        `layout: ${yamlString(blog)}`
+    ];
+
+    if (categories.length) {
+        lines.push("categories:");
+
+        categories.forEach(category => {
+            lines.push(`  - ${yamlString(category)}`);
+        });
+    }
+
+    lines.push("---", "");
+
+    return lines.join("\n");
+}
+
+// BASE64 ENCODING
 
 function encodeBase64(text) {
     const bytes = new TextEncoder().encode(text);
-
     let binary = "";
-
     const chunkSize = 0x8000;
 
-    for (
-        let i = 0;
-        i < bytes.length;
-        i += chunkSize
-    ) {
+    for (let i = 0; i < bytes.length; i += chunkSize) {
         binary += String.fromCharCode(
             ...bytes.subarray(i, i + chunkSize)
         );
@@ -244,63 +214,54 @@ function encodeBase64(text) {
     return btoa(binary);
 }
 
-
+// PUBLISH POST
 async function saveFile() {
     if (!githubToken) {
         setStatus("Connect to GitHub first.");
         return;
     }
 
-    const postName = getPostName();
+    if (!getPostName()) {
+        setStatus("Enter a post title.");
+        return;
+    }
 
-    if (!postName) {
-        setStatus("Enter a post name.");
+    if (!getValue("author")) {
+        setStatus("Enter an author.");
         return;
     }
 
     const filePath = getFilePath();
 
     if (!filePath) {
-        setStatus("Invalid post name.");
-        return;
-    }
-
-    const commitMessage =
-        document
-            .getElementById("commit-message")
-            .value
-            .trim();
-
-    if (!commitMessage) {
-        setStatus("Enter a commit message.");
+        setStatus("Invalid post title.");
         return;
     }
 
     try {
         setStatus("Publishing...");
 
-        const branch =
-            document.getElementById("branch").value.trim();
+        const markdown =
+            getFrontMatter() + editor.getMarkdown();
 
         const body = {
-            message: commitMessage,
-
-            content: encodeBase64(
-                editor.value()
-            ),
-
-            branch
+            message: `post: added ${getPostName()}`,
+            content: encodeBase64(markdown),
+            branch: DEFAULT_BRANCH
         };
 
         const response = await github(
-            repoPath(`/contents/${filePath}`),
+            repoPath(
+                `/contents/${filePath
+                    .split("/")
+                    .map(encodeURIComponent)
+                    .join("/")}`
+            ),
             {
                 method: "PUT",
-
                 headers: {
                     "Content-Type": "application/json"
                 },
-
                 body: JSON.stringify(body)
             }
         );
@@ -309,36 +270,24 @@ async function saveFile() {
 
         if (!response.ok) {
             throw new Error(
-                result.message ||
-                `GitHub returned ${response.status}`
+                result.message || `GitHub returned ${response.status}`
             );
         }
 
-        document.getElementById(
-            "current-file"
-        ).textContent = filePath;
+        document.getElementById("current-file").textContent = filePath;
 
         setStatus(
-            `Published successfully: ${result.commit.sha.slice(0, 7)
-            }`
+            `Published successfully: ${result.commit.sha.slice(0, 7)}`
         );
-
     } catch (error) {
         console.error(error);
-
-        setStatus(
-            `Publish failed: ${error.message}`
-        );
+        setStatus(`Publish failed: ${error.message}`);
     }
 }
 
-
 function setStatus(message) {
-    document.getElementById(
-        "status"
-    ).textContent = message;
+    document.getElementById("status").textContent = message;
 }
-
 
 loadSettings();
 

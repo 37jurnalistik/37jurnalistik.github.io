@@ -7,10 +7,9 @@
     <title>GitHub Admin</title>
 
     <link rel="stylesheet" href="style.css">
-
     <link
         rel="stylesheet"
-        href="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.css"
+        href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css"
     >
 </head>
 
@@ -22,6 +21,7 @@
 
         <h1>GitHub Admin</h1>
 
+        <!-- GitHub connection -->
         <section id="connection">
 
             <input
@@ -31,36 +31,24 @@
                 autocomplete="off"
             >
 
-            <input
-                id="repo"
-                type="text"
-                placeholder="owner/repository"
-            >
-
-            <input
-                id="branch"
-                type="text"
-                placeholder="Branch"
-                value="main"
-            >
-
             <div class="button-row">
                 <button onclick="connect()">Connect</button>
+
                 <button class="secondary" onclick="clearToken()">
                     Forget token
                 </button>
             </div>
 
-            <div id="status"></div>
+            <div id="status" role="status"></div>
 
         </section>
 
+        <!-- Post details -->
         <section id="post-info">
 
-            <strong>New Post</strong>
+            <h2>Post details</h2>
 
-            <label for="post-name">Post name</label>
-
+            <label for="post-name">Post title</label>
             <input
                 id="post-name"
                 type="text"
@@ -68,40 +56,50 @@
                 oninput="updateFilePath()"
             >
 
-            <div id="file-path">
-                blog/YYYY-MM-DD-post-name.md
+            <label for="author">Author</label>
+            <input
+                id="author"
+                type="text"
+                placeholder="Author name"
+            >
+
+            <label for="description">Description</label>
+            <textarea
+                id="description"
+                rows="3"
+                placeholder="Brief description of the post"
+            ></textarea>
+
+            <label for="categories">Categories</label>
+            <input
+                id="categories"
+                type="text"
+                placeholder="News, School"
+            >
+
+            <div class="field-hint">
+                Separate multiple categories and tags with commas.
+            </div>
+
+            <div class="file-info">
+                <strong>File path</strong>
+                <div id="file-path">
+                    blog/YYYY-MM-DD-post-name.md
+                </div>
             </div>
 
         </section>
 
     </aside>
 
-
+    <!-- Editor -->
     <main id="main">
 
-        <div id="toolbar">
-
-            <span id="current-file">
-                New post
-            </span>
-
-        </div>
-
-
         <div id="editor-container">
-
-            <textarea id="editor"></textarea>
-
+            <div id="editor"></div>
         </div>
-
 
         <div id="bottom-bar">
-
-            <input
-                id="commit-message"
-                type="text"
-                placeholder="Commit message"
-            >
 
             <button onclick="saveFile()">
                 Publish
@@ -109,12 +107,13 @@
 
         </div>
 
+        <div id="current-file"></div>
+
     </main>
 
 </div>
 
-
-<script src="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.js"></script>
+<script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
 <script src="script.js"></script>
 
 </body>
