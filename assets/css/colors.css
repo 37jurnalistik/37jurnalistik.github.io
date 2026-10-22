@@ -90,15 +90,6 @@ main a:visited:hover {
   color: var(--magenta);
 }
 
-header nav a {
-  text-decoration: none;
-  color: var(--white);
-}
-
-header nav a:hover {
-  color: var(--white-link-hover);
-}
-
 header a {
   text-decoration: none;
   color: var(--white);
