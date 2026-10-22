@@ -98,3 +98,12 @@ header nav a {
 header nav a:hover {
   color: var(--white-link-hover);
 }
+
+header a {
+  text-decoration: none;
+  color: var(--white);
+}
+
+header a:hover {
+  color: var(--white-link-hover);
+}
