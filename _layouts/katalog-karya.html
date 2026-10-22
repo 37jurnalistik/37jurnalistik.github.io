@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+    {% include head.html %}
+
+    <link rel="stylesheet" href="{{ '/assets/css/catalog.css' | relative_url }}">
+
+    <body>
+        {% include header.html %}
+        {% include sidebar.html %}
+
+        <main>
+            <h1>Karya Kami</h1>
+            <nav class="nav">
+                {% for post in site.posts %}
+                    <a href="{{ post.url | relative_url }}" class="item">
+                        <span class="post-title">{{ post.title }}</span>
+                        <span class="post-author">Oleh {{ post.author }}</span>
+                    </a>
+                {% endfor %}
+            </nav>
+        </main>
+
+        {% include script.html %}
+    </body>
+</html>

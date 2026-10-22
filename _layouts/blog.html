@@ -1,0 +1,22 @@
+<!doctype html>
+<html>
+    {% include head.html %}
+
+    <link rel="stylesheet" href="{{ '/assets/css/blog.css' | relative_url }}">
+
+    <body>
+        {% include header.html %}
+        {% include sidebar.html %}
+
+        <main>
+            <div class="blog-content">
+                {{ content }}
+                <time datetime="{{ page.date | date_to_xmlschema }}">
+                    {{ page.date | date: "%B %-d, %Y" }}
+                </time>
+            </div>
+        </main>
+
+        {% include script.html %}
+    </body>
+</html>
