@@ -6,8 +6,8 @@ body {
 }
 
 body {
-  background-color: var(--black);
-  font-family: "Inter", sans-serif;
+  background-color: var(--white);
+  font-family: "DM Serif Display", sans-serif;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -28,6 +28,7 @@ canvas {
   padding-bottom: 20px;
 }
 
-main h1, main h2 {
+main h1,
+main h2 {
   margin-top: 0
 }

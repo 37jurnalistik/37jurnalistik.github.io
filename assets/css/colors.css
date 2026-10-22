@@ -1,6 +1,6 @@
 :root {
-  --black: #20202a;
-  --white: #c6d0e9;
+  --black: #14243a;
+  --white: #eceddc;
   --red: #d95e59;
   --red-bright: #ebb9b9;
   --green: #8fc587;
@@ -15,6 +15,7 @@
   --cyan-bright: #b8dceb;
   --link: #6a9ed6;
   --link-hover: #9bbce5;
+  --white-link-hover: #adb6cc;
 }
 
 .black {
@@ -73,7 +74,6 @@
   color: var(--cyan-bright);
 }
 
-
 main a {
   color: var(--link);
 }
@@ -88,4 +88,13 @@ main a:hover {
 
 main a:visited:hover {
   color: var(--magenta);
+}
+
+header nav a {
+  text-decoration: none;
+  color: var(--white);
+}
+
+header nav a:hover {
+  color: var(--white-link-hover);
 }
