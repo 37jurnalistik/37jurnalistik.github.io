@@ -4,8 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>GitHub Admin</title>
-
     <link rel="stylesheet" href="style.css">
     <link
         rel="stylesheet"
@@ -19,15 +17,13 @@
 
     <aside id="sidebar">
 
-        <h1>GitHub Admin</h1>
-
         <!-- GitHub connection -->
         <section id="connection">
 
             <input
                 id="token"
                 type="password"
-                placeholder="GitHub token"
+                placeholder="GitHub admin token"
                 autocomplete="off"
             >
 
@@ -54,21 +50,21 @@
                 type="text"
                 placeholder="My First Post"
                 oninput="updateFilePath()"
-            >
+            ><br><br>
 
             <label for="author">Author</label>
             <input
                 id="author"
                 type="text"
                 placeholder="Author name"
-            >
+            ><br><br>
 
             <label for="description">Description</label>
             <textarea
                 id="description"
                 rows="3"
                 placeholder="Brief description of the post"
-            ></textarea>
+            ></textarea><br><br>
 
             <label for="categories">Categories</label>
             <input
@@ -79,7 +75,7 @@
 
             <div class="field-hint">
                 Separate multiple categories and tags with commas.
-            </div>
+            </div><br>
 
             <div class="file-info">
                 <strong>File path</strong>
@@ -87,6 +83,8 @@
                     blog/YYYY-MM-DD-post-name.md
                 </div>
             </div>
+
+            <p>gunakan laptop/komputer untuk memudahkan proses <br>(HP juga bisa tapi agak ribet)</p>
 
         </section>
 
@@ -106,9 +104,6 @@
             </button>
 
         </div>
-
-        <div id="current-file"></div>
-
     </main>
 
 </div>
