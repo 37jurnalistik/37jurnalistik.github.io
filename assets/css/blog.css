@@ -11,6 +11,7 @@
 
 .blog-content h1 {
   font-size: clamp(30px, 2vw, 34px);
+  padding-top: 2vh;
   padding-bottom: 5px;
 }
 
@@ -31,6 +32,7 @@
   list-style-type: "- ";
   font-weight: 330;
 }
+
 .blog-content ul::marker {
   font-weight: bold;
 }

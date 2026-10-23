@@ -1,3 +1,8 @@
+main h1 {
+  margin-bottom: 0;
+  margin-top: 2vh;
+}
+
 .nav {
   display: flex;
   flex-direction: column;

@@ -23,6 +23,29 @@ main {
   text-align: center;
   font-size: clamp(15px, 2vw, 20px);
   flex: 1;
+  gap: 4vh;
+  padding-bottom: 4vh;
+}
+
+[id] {
+  scroll-margin-top: 40px;
+}
+
+.filler-text {
+  display: flex;
+  flex-direction: column;
+  gap: 6vh;
+}
+
+.filler-text p,
+.filler-text li {
+  font-size: 21px;
+  margin: 0px 11vw;
+  text-align: justify;
+}
+
+li {
+  padding-bottom: 1vh;
 }
 
 .desktop-nav {
@@ -55,18 +78,24 @@ main {
 
 .mobile-logo,
 .mobile-sidebar-toggle {
-    display: none;
+  display: none;
 }
 
 @media (max-width: 768px) {
+  .filler-text p {
+    font-size: 19px;
+    margin: 0px 6vw;
+    text-align: justify;
+  }
+
   .desktop-branding,
   .desktop-nav {
-      display: none;
+    display: none;
   }
 
   .mobile-logo,
   .mobile-sidebar-toggle {
-      display: block;
+    display: block;
   }
 
   .mobile-logo {
