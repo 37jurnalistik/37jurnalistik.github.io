@@ -10,14 +10,113 @@
 
         <main>
             <h1>Karya Kami</h1>
+            <div class="category-buttons-container">
+                <p>Kategori</p>
+
+                <div class="category-buttons-wrapper">
+                    <div class="category-buttons" id="categoryButtons">
+                        <button class="category-btn active" data-category="all">
+                            Semua
+                        </button>
+
+                        {% for category in site.categories %}
+                            <button class="category-btn" data-category="{{ category[0] | escape }}">
+                                {{ category[0] }}
+                            </button>
+                        {% endfor %}
+                    </div>
+
+                    <button id="toggleCategories" class="toggle-categories" hidden>
+                        + More
+                    </button>
+                </div>
+            </div>
+
             <nav class="nav">
                 {% for post in site.posts %}
-                    <a href="{{ post.url | relative_url }}" class="item">
+                    <a href="{{ post.url | relative_url }}"
+                      class="item"
+                      data-categories="{{ post.categories | join: ',' | escape }}">
                         <span class="post-title">{{ post.title }}</span>
                         <span class="post-author">Oleh {{ post.author }}</span>
                     </a>
                 {% endfor %}
             </nav>
+
+        <script>
+        const categoryContainer = document.getElementById("categoryButtons");
+        const toggleButton = document.getElementById("toggleCategories");
+
+        let expanded = false;
+
+        function updateCategories() {
+            const buttons = [...categoryContainer.querySelectorAll(".category-btn")];
+
+            buttons.forEach(button => {
+                button.classList.remove("hidden-category");
+            });
+
+            toggleButton.hidden = true;
+
+            if (expanded) {
+                toggleButton.hidden = false;
+                toggleButton.textContent = "Show less";
+                return;
+            }
+
+            requestAnimationFrame(() => {
+                const firstButton = buttons[0];
+
+                if (!firstButton) return;
+
+                const firstRow = firstButton.getBoundingClientRect().top;
+
+                let hasHidden = false;
+
+                buttons.forEach(button => {
+                    if (button.getBoundingClientRect().top > firstRow + 1) {
+                        button.classList.add("hidden-category");
+                        hasHidden = true;
+                    }
+                });
+
+                if (hasHidden) {
+                    toggleButton.hidden = false;
+                    toggleButton.textContent = "+ More";
+                }
+            });
+        }
+
+        toggleButton.addEventListener("click", () => {
+            expanded = !expanded;
+            updateCategories();
+        });
+
+        categoryContainer.addEventListener("click", event => {
+            const button = event.target.closest(".category-btn");
+
+            if (!button) return;
+
+            const selected = button.dataset.category;
+
+            categoryContainer.querySelectorAll(".category-btn").forEach(btn => {
+                btn.classList.toggle("active", btn === button);
+            });
+
+            document.querySelectorAll(".nav .item").forEach(item => {
+                const categories = item.dataset.categories
+                    .split(",")
+                    .filter(Boolean);
+
+                item.hidden = selected !== "all"
+                    && !categories.includes(selected);
+            });
+        });
+
+        window.addEventListener("resize", updateCategories);
+
+        updateCategories();
+        </script>
         </main>
 
         {% include script.html %}

@@ -7,12 +7,16 @@
 .blog-content p {
   margin-top: 0;
   font-size: clamp(20px, 2vw, 22px);
+  margin-left: 2vw;
+  margin-right: 2vw;
 }
 
 .blog-content h1 {
   font-size: clamp(30px, 2vw, 34px);
   padding-top: 2vh;
   padding-bottom: 5px;
+  margin-left: 2vw;
+  margin-right: 2vw;
 }
 
 .blog-content h2 {
@@ -26,6 +30,8 @@
   font-size: clamp(18px, 2vw, 24px);
   font-weight: 475;
   margin-bottom: 2px;
+  margin-left: 4vw;
+  margin-right: 4vw;
 }
 
 .blog-content ul {
